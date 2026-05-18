@@ -626,6 +626,135 @@ function initTypewriter() {
 }
 
 /* ----------------------------------------------------------------
+   19b. FEEDBACK
+   ---------------------------------------------------------------- */
+
+const feedbacks = [];
+
+function switchFeedbackTab(tab, btn) {
+  document.querySelectorAll(".feedback-tab").forEach((t) => {
+    t.classList.remove("active");
+    t.setAttribute("aria-selected", "false");
+  });
+  document.querySelectorAll(".feedback-panel").forEach((p) => p.classList.add("hidden"));
+
+  btn.classList.add("active");
+  btn.setAttribute("aria-selected", "true");
+  document.getElementById("tab-" + tab)?.classList.remove("hidden");
+}
+
+function updateCharCount() {
+  const textarea = document.getElementById("fb-msg");
+  const counter = document.getElementById("char-count");
+  if (textarea && counter) {
+    counter.textContent = textarea.value.length;
+  }
+}
+
+function submitFeedback() {
+  const nome = document.getElementById("fb-nome")?.value.trim() || "Anônimo";
+  const categoria = document.getElementById("fb-categoria")?.value;
+  const msg = document.getElementById("fb-msg")?.value.trim();
+
+  const errCategoria = document.getElementById("err-categoria");
+  const errMsg = document.getElementById("err-msg");
+
+  if (errCategoria) errCategoria.textContent = "";
+  if (errMsg) errMsg.textContent = "";
+
+  let hasError = false;
+
+  if (!categoria) {
+    if (errCategoria) errCategoria.textContent = "Selecione uma categoria.";
+    hasError = true;
+  }
+
+  if (!msg) {
+    if (errMsg) errMsg.textContent = "Escreva uma mensagem antes de enviar.";
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  const btn = document.getElementById("btn-feedback");
+  const label = document.getElementById("btn-feedback-label");
+  if (btn) btn.disabled = true;
+  if (label) label.textContent = "Enviando…";
+
+  setTimeout(() => {
+    feedbacks.unshift({ nome, categoria, msg, data: new Date() });
+
+    const badge = document.getElementById("feedback-count");
+    if (badge) badge.textContent = feedbacks.length;
+
+    const nomeEl = document.getElementById("fb-nome");
+    const catEl = document.getElementById("fb-categoria");
+    const msgEl = document.getElementById("fb-msg");
+    const charCount = document.getElementById("char-count");
+    if (nomeEl) nomeEl.value = "";
+    if (catEl) catEl.value = "";
+    if (msgEl) msgEl.value = "";
+    if (charCount) charCount.textContent = "0";
+
+    const successEl = document.getElementById("feedback-success");
+    if (successEl) successEl.classList.remove("hidden");
+
+    setTimeout(() => {
+      if (btn) btn.disabled = false;
+      if (label) label.textContent = "Enviar Feedback";
+      if (successEl) successEl.classList.add("hidden");
+    }, 3000);
+
+    renderFeedbackList();
+  }, 800);
+}
+
+function renderFeedbackList() {
+  const list = document.getElementById("feedback-list");
+  const empty = document.getElementById("feedback-empty");
+  if (!list) return;
+
+  const categoriaLabels = {
+    design: "Design Visual",
+    conteudo: "Conteúdo Histórico",
+    usabilidade: "Usabilidade",
+    desempenho: "Desempenho",
+    sugestao: "Sugestão de Melhoria",
+    outro: "Outro"
+  };
+
+  if (feedbacks.length === 0) {
+    if (empty) empty.classList.remove("hidden");
+    list.innerHTML = "";
+    return;
+  }
+
+  if (empty) empty.classList.add("hidden");
+
+  list.innerHTML = feedbacks.map((fb) => `
+    <li class="feedback-item">
+      <div class="feedback-item-header">
+        <strong class="feedback-item-nome">${escapeHtml(fb.nome)}</strong>
+        <span class="feedback-item-categoria">${categoriaLabels[fb.categoria] || fb.categoria}</span>
+      </div>
+      <p class="feedback-item-msg">${escapeHtml(fb.msg)}</p>
+    </li>
+  `).join("");
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+window.switchFeedbackTab = switchFeedbackTab;
+window.updateCharCount = updateCharCount;
+window.submitFeedback = submitFeedback;
+
+/* ----------------------------------------------------------------
    20. INICIALIZAÇÃO GERAL
    ---------------------------------------------------------------- */
 
