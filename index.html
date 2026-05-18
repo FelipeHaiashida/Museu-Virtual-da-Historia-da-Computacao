@@ -546,6 +546,107 @@
         </div>
       </div>
     </section>
+    <section id="feedback" class="section section-dark">
+  <div class="container">
+    <div class="section-label">08 — Feedback</div>
+    <h2 class="section-title text-center">Deixe seu <span class="gradient-text">Feedback</span></h2>
+    <p class="section-intro text-center">
+      Sua opinião nos ajuda a melhorar o projeto. Compartilhe o que achou da experiência!
+    </p>
+ 
+    <div class="feedback-wrapper">
+      <!-- Tabs -->
+      <div class="feedback-tabs" role="tablist">
+        <button class="feedback-tab active" role="tab" aria-selected="true"
+                data-tab="form" onclick="switchFeedbackTab('form', this)">
+          <span class="tab-icon">✏️</span> Enviar Feedback
+        </button>
+        <button class="feedback-tab" role="tab" aria-selected="false"
+                data-tab="lista" onclick="switchFeedbackTab('lista', this)">
+          <span class="tab-icon">💬</span> Ver Feedbacks
+          <span class="tab-badge" id="feedback-count">0</span>
+        </button>
+      </div>
+ 
+      <!-- Painel: Formulário -->
+      <div class="feedback-panel" id="tab-form">
+        <div class="feedback-form-card">
+          <!-- Avaliação por estrelas -->
+          <div class="feedback-field">
+            <label class="feedback-label">Avaliação geral</label>
+            <div class="stars-input" id="stars-input" role="radiogroup" aria-label="Avaliação de 1 a 5 estrelas">
+              <button type="button" class="star-btn" data-val="1" aria-label="1 estrela" onclick="setRating(1)">★</button>
+              <button type="button" class="star-btn" data-val="2" aria-label="2 estrelas" onclick="setRating(2)">★</button>
+              <button type="button" class="star-btn" data-val="3" aria-label="3 estrelas" onclick="setRating(3)">★</button>
+              <button type="button" class="star-btn" data-val="4" aria-label="4 estrelas" onclick="setRating(4)">★</button>
+              <button type="button" class="star-btn" data-val="5" aria-label="5 estrelas" onclick="setRating(5)">★</button>
+            </div>
+            <span class="feedback-err" id="err-stars"></span>
+          </div>
+ 
+          <!-- Nome -->
+          <div class="feedback-field">
+            <label class="feedback-label" for="fb-nome">Nome <span class="optional">(opcional)</span></label>
+            <input type="text" id="fb-nome" class="feedback-input" placeholder="Como quer ser identificado?" maxlength="60" />
+          </div>
+ 
+          <!-- Categoria -->
+          <div class="feedback-field">
+            <label class="feedback-label" for="fb-categoria">Categoria</label>
+            <div class="select-wrapper">
+              <select id="fb-categoria" class="feedback-select">
+                <option value="">Selecione uma categoria…</option>
+                <option value="design">Design Visual</option>
+                <option value="conteudo">Conteúdo Histórico</option>
+                <option value="usabilidade">Usabilidade</option>
+                <option value="desempenho">Desempenho</option>
+                <option value="sugestao">Sugestão de Melhoria</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+            <span class="feedback-err" id="err-categoria"></span>
+          </div>
+ 
+          <!-- Mensagem -->
+          <div class="feedback-field">
+            <label class="feedback-label" for="fb-msg">Mensagem</label>
+            <textarea id="fb-msg" class="feedback-textarea" rows="4"
+                      placeholder="Conte o que achou do museu, o que mais gostou ou o que poderia melhorar…"
+                      maxlength="500" oninput="updateCharCount()"></textarea>
+            <div class="char-counter"><span id="char-count">0</span>/500</div>
+            <span class="feedback-err" id="err-msg"></span>
+          </div>
+ 
+          <!-- Botão -->
+          <button type="button" class="btn-primary btn-full btn-feedback-submit" id="btn-feedback" onclick="submitFeedback()">
+            <span class="btn-pulse"></span>
+            <span id="btn-feedback-label">Enviar Feedback</span>
+            <span class="btn-arrow">→</span>
+          </button>
+ 
+          <!-- Mensagem de sucesso -->
+          <div class="feedback-success hidden" id="feedback-success">
+            <span class="success-icon">✓</span>
+            <p>Feedback enviado! Obrigado pela contribuição.</p>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Painel: Lista de feedbacks -->
+      <div class="feedback-panel hidden" id="tab-lista">
+        <div id="feedback-lista-container">
+          <div class="feedback-empty" id="feedback-empty">
+            <div class="empty-icon">💬</div>
+            <p>Nenhum feedback ainda. Seja o primeiro!</p>
+          </div>
+          <ul class="feedback-list" id="feedback-list"></ul>
+        </div>
+      </div>
+ 
+    </div>
+  </div>
+</section>
+ 
 
     <!-- ===================== RODAPÉ ===================== -->
     <footer class="footer">
