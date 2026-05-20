@@ -1251,6 +1251,212 @@ strong { color: var(--text); font-weight: 500; }
   position: relative;
 }
 
+/* ---- Tabs ---- */
+.feedback-wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.feedback-tabs {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1.8rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+
+.feedback-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-family: var(--font-display);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: .75rem 1.1rem;
+  margin-bottom: -1px;
+  cursor: pointer;
+  border-radius: var(--radius) var(--radius) 0 0;
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+
+.feedback-tab:hover {
+  color: var(--cyan);
+  background: rgba(12, 255, 225, .04);
+}
+
+.feedback-tab.active {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+  background: rgba(12, 255, 225, .06);
+}
+
+.tab-icon {
+  font-size: .95rem;
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: var(--violet);
+  color: #fff;
+  font-size: .65rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  border-radius: 20px;
+  letter-spacing: 0;
+}
+
+/* ---- Painel de conteúdo ---- */
+.feedback-panel {
+  animation: fb-slide-in .25s ease both;
+}
+
+/* ---- Card do formulário ---- */
+.feedback-form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.feedback-label {
+  font-size: .8rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  margin-bottom: .3rem;
+  display: block;
+}
+
+.optional {
+  opacity: .55;
+  font-size: .75em;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.feedback-input,
+.feedback-select,
+.feedback-textarea {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .95rem;
+  padding: .75rem 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+.feedback-input:focus,
+.feedback-select:focus,
+.feedback-textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(12, 255, 225, .12);
+}
+
+.feedback-textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: '▾';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  font-size: .85rem;
+}
+
+.feedback-select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.feedback-select option {
+  background: var(--bg2);
+}
+
+.char-counter {
+  font-size: .75rem;
+  color: var(--text-dim);
+  text-align: right;
+  margin-top: .2rem;
+}
+
+.feedback-err {
+  font-size: .78rem;
+  color: #ff5f6b;
+  min-height: 1.1em;
+  display: block;
+  margin-top: .15rem;
+}
+
+/* ---- Sucesso inline ---- */
+.feedback-success {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: rgba(12, 255, 225, .07);
+  border: 1px solid rgba(12, 255, 225, .25);
+  border-radius: var(--radius);
+  padding: .9rem 1.1rem;
+  animation: fb-slide-in .3s ease both;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--cyan);
+  color: var(--bg);
+  border-radius: 50%;
+  font-size: .9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.feedback-success p {
+  font-size: .9rem;
+  color: var(--cyan);
+  margin: 0;
+}
+
+/* ---- Lista de feedbacks ---- */
+.feedback-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-icon {
+  font-size: 2.2rem;
+  margin-bottom: .8rem;
+  opacity: .5;
+}
+
 /* ---- Avaliação por estrelas ---- */
 .feedback-stars-wrapper {
   display: flex;
