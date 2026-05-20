@@ -629,7 +629,19 @@ function initTypewriter() {
    19b. FEEDBACK
    ---------------------------------------------------------------- */
 
-const feedbacks = [];
+const FEEDBACKS_KEY = "mvhc_feedbacks";
+
+function loadFeedbacks() {
+  try {
+    return JSON.parse(localStorage.getItem(FEEDBACKS_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveFeedbacks(list) {
+  localStorage.setItem(FEEDBACKS_KEY, JSON.stringify(list));
+}
 
 function switchFeedbackTab(tab, btn) {
   document.querySelectorAll(".feedback-tab").forEach((t) => {
@@ -682,7 +694,9 @@ function submitFeedback() {
   if (label) label.textContent = "Enviando…";
 
   setTimeout(() => {
-    feedbacks.unshift({ nome, categoria, msg, data: new Date() });
+    const feedbacks = loadFeedbacks();
+    feedbacks.unshift({ nome, categoria, msg, data: new Date().toISOString() });
+    saveFeedbacks(feedbacks);
 
     const badge = document.getElementById("feedback-count");
     if (badge) badge.textContent = feedbacks.length;
@@ -713,6 +727,8 @@ function renderFeedbackList() {
   const list = document.getElementById("feedback-list");
   const empty = document.getElementById("feedback-empty");
   if (!list) return;
+
+  const feedbacks = loadFeedbacks();
 
   const categoriaLabels = {
     design: "Design Visual",
@@ -764,6 +780,12 @@ function initSite() {
   applyUnityLinks();
   initTypewriter();
   prepareAuthScreen();
+
+  // Carrega feedbacks salvos
+  const saved = loadFeedbacks();
+  const badge = document.getElementById("feedback-count");
+  if (badge) badge.textContent = saved.length;
+  renderFeedbackList();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
