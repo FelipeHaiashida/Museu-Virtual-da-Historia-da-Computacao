@@ -474,7 +474,11 @@ const UNITY_URL            = "https://felipehaiashida.github.io/MVHC_UNITY_WEB/"
 const UNITY_IS_PLACEHOLDER = false;
 
 function applyUnityLinks() {
-  const links = document.querySelectorAll('a[href="https://seu-link-da-unity-webgl.com"]');
+  // Seleciona todos os links que apontam para o museu (qualquer URL atual)
+  const links = document.querySelectorAll(
+    `a[href="${UNITY_URL}"], a[href="https://seu-link-da-unity-webgl.com"]`
+  );
+
   links.forEach(link => {
     if (UNITY_IS_PLACEHOLDER) {
       link.addEventListener("click", e => {
@@ -483,6 +487,8 @@ function applyUnityLinks() {
       });
     } else {
       link.setAttribute("href", UNITY_URL);
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noopener");
     }
   });
 }
