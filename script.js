@@ -470,7 +470,7 @@ function initScrollReveal() {
 /* ----------------------------------------------------------------
    17. UNITY WEBGL — LINK E FALLBACK
    ---------------------------------------------------------------- */
-const UNITY_URL            = "./";
+const UNITY_URL            = "https://felipehaiashida.github.io/MVHC_UNITY_WEB/";
 const UNITY_IS_PLACEHOLDER = false;
 
 function applyUnityLinks() {
