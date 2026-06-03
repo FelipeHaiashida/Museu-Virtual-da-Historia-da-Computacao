@@ -470,8 +470,8 @@ function initScrollReveal() {
 /* ----------------------------------------------------------------
    17. UNITY WEBGL — LINK E FALLBACK
    ---------------------------------------------------------------- */
-const UNITY_URL            = "https://seu-link-da-unity-webgl.com";
-const UNITY_IS_PLACEHOLDER = UNITY_URL.includes("seu-link");
+const UNITY_URL            = "./";
+const UNITY_IS_PLACEHOLDER = false;
 
 function applyUnityLinks() {
   const links = document.querySelectorAll('a[href="https://seu-link-da-unity-webgl.com"]');
