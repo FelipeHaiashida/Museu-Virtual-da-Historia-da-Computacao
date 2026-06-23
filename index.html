@@ -12,8 +12,17 @@
 </head>
 <body>
 
+  <!-- ===================== AUTH LOADER ===================== -->
+  <div id="auth-loader" class="auth-loader">
+    <div class="auth-loader-inner">
+      <span class="auth-loader-icon">⬡</span>
+      <div class="loader-spinner"></div>
+      <p class="loader-text">Verificando sessão…</p>
+    </div>
+  </div>
+
   <!-- ===================== TELA DE LOGIN ===================== -->
-  <div id="login-screen" class="login-screen">
+  <div id="login-screen" class="login-screen hidden">
     <div class="login-bg-grid"></div>
     <div class="login-card">
       <div class="login-logo">
@@ -67,7 +76,7 @@
           <li><a href="#desafios"     onclick="closeMenu()">Desafios</a></li>
           <li><a href="#cronograma"   onclick="closeMenu()">Cronograma</a></li>
           <li>
-            <a href="https://seu-link-da-unity-webgl.com"
+            <a href="https://felipehaiashida.github.io/MVHC_UNITY_WEB/"
                target="_blank" rel="noopener"
                class="nav-cta">Acessar Museu</a>
           </li>
@@ -94,7 +103,7 @@
           acessível diretamente pelo seu navegador — sem instalações.
         </p>
         <div class="hero-actions animate-fadein" style="animation-delay:.6s">
-          <a href="https://seu-link-da-unity-webgl.com"
+          <a href="https://felipehaiashida.github.io/MVHC_UNITY_WEB/"
              target="_blank" rel="noopener"
              class="btn-primary btn-lg" id="hero-cta">
             <span class="btn-pulse"></span>
@@ -536,7 +545,7 @@
           <div class="cta-glow"></div>
           <h2>Pronto para explorar?</h2>
           <p>Embarque em uma jornada interativa pelos marcos que definiram a história da computação.</p>
-          <a href="https://seu-link-da-unity-webgl.com"
+          <a href="https://felipehaiashida.github.io/MVHC_UNITY_WEB/"
              target="_blank" rel="noopener"
              class="btn-primary btn-lg">
             <span class="btn-pulse"></span>
@@ -660,6 +669,7 @@
               <li><a href="#objetivos">Objetivos</a></li>
               <li><a href="#tecnologias">Tecnologias</a></li>
               <li><a href="#cronograma">Cronograma</a></li>
+              <li><a href="admin.html" style="color:var(--violet2)">Painel Admin</a></li>
             </ul>
           </div>
         </div>
@@ -668,6 +678,16 @@
         </div>
       </div>
     </footer>
+
+    <!-- ===================== MODAL UNITY FALLBACK ===================== -->
+    <div id="unity-modal" class="modal-overlay hidden" onclick="closeUnityModal()">
+      <div class="modal-card" onclick="event.stopPropagation()">
+        <div class="modal-icon">🏛️</div>
+        <h3>Museu em Construção</h3>
+        <p>O ambiente 3D ainda está sendo preparado. Em breve você poderá explorar o museu virtual interativo!</p>
+        <button onclick="closeUnityModal()" class="btn-primary" style="margin-top:8px">Entendido</button>
+      </div>
+    </div>
 
   </div><!-- /main-site -->
 

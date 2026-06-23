@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin — MVHC</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    .admin-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      background: rgba(7,9,26,.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      z-index: 900;
+    }
+
+    .admin-nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: .9rem;
+      letter-spacing: .12em;
+      color: var(--text);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .admin-nav-logo:hover { color: var(--cyan); }
+
+    .admin-nav-badge {
+      font-size: .55rem;
+      background: rgba(12,255,225,.1);
+      border: 1px solid rgba(12,255,225,.3);
+      color: var(--cyan);
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-family: var(--font-display);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .admin-nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .admin-user {
+      font-size: .83rem;
+      color: var(--text-muted);
+    }
+
+    .admin-wrapper {
+      min-height: 100vh;
+      padding: calc(var(--nav-h) + 48px) 0 80px;
+    }
+
+    .admin-header {
+      margin-bottom: 40px;
+    }
+
+    .admin-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -.01em;
+    }
+
+    .admin-subtitle {
+      font-size: .95rem;
+      color: var(--text-muted);
+    }
+
+    /* Stats */
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      text-align: center;
+      transition: border-color var(--transition);
+    }
+    .stat-card:hover { border-color: rgba(12,255,225,.3); }
+
+    .stat-num {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan), var(--violet2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-family: var(--font-display);
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* Filtros */
+    .admin-filter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .filter-label {
+      font-family: var(--font-display);
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-right: 4px;
+    }
+
+    .filter-btn {
+      font-family: var(--font-display);
+      font-size: .6rem;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      color: var(--cyan);
+      border-color: var(--cyan);
+      background: rgba(12,255,225,.06);
+    }
+
+    /* Lista */
+    .admin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .admin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      animation: fb-slide-in .3s ease both;
+      transition: border-color var(--transition);
+    }
+    .admin-card:hover { border-color: rgba(12,255,225,.25); }
+
+    .admin-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-nome {
+      font-weight: 500;
+      color: var(--text);
+      font-size: .95rem;
+    }
+
+    .admin-categoria {
+      font-family: var(--font-display);
+      font-size: .54rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: rgba(12,255,225,.08);
+      border: 1px solid rgba(12,255,225,.2);
+      border-radius: 100px;
+      padding: 3px 10px;
+    }
+
+    .admin-data {
+      font-size: .75rem;
+      color: var(--text-dim);
+      margin-left: auto;
+    }
+
+    .admin-msg {
+      font-size: .9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .admin-empty {
+      text-align: center;
+      padding: 80px 24px;
+    }
+    .admin-empty-icon { font-size: 2.5rem; margin-bottom: 16px; opacity: .5; }
+
+    /* ---- Abas principais ---- */
+    .admin-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 36px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .admin-tab {
+      font-family: var(--font-display);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 10px 20px;
+      margin-bottom: -1px;
+      cursor: pointer;
+      border-radius: var(--radius) var(--radius) 0 0;
+      transition: color .2s, border-color .2s, background .2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .admin-tab:hover { color: var(--cyan); background: rgba(12,255,225,.04); }
+    .admin-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); background: rgba(12,255,225,.06); }
+
+    .admin-tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      background: var(--violet);
+      color: #fff;
+      font-size: .62rem;
+      border-radius: 20px;
+      letter-spacing: 0;
+    }
+
+    /* ---- Seção de avaliações ---- */
+    .aval-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .aval-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      text-align: center;
+      transition: border-color .3s;
+    }
+
+    .aval-stat-card:hover { border-color: rgba(12,255,225,.3); }
+
+    .aval-stat-num {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan), var(--violet2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
+
+    .aval-stat-label {
+      font-family: var(--font-display);
+      font-size: .55rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* Barras de critérios */
+    .aval-criterios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .criterio-bar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+    }
+
+    .criterio-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .criterio-bar-name {
+      font-family: var(--font-display);
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .criterio-bar-score {
+      font-family: var(--font-display);
+      font-size: .8rem;
+      font-weight: 900;
+      color: var(--cyan);
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--violet), var(--cyan));
+      transition: width .6s ease;
+    }
+
+    /* Botão exportar */
+    .export-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .export-info {
+      font-size: .85rem;
+      color: var(--text-muted);
+    }
+
+    .btn-export {
+      font-family: var(--font-display);
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: rgba(12,255,225,.08);
+      border: 1px solid rgba(12,255,225,.3);
+      border-radius: var(--radius);
+      padding: 9px 18px;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-export:hover { background: rgba(12,255,225,.14); transform: translateY(-1px); }
+
+    /* Cards de avaliação */
+    .aval-card-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      animation: fb-slide-in .3s ease both;
+      transition: border-color .3s;
+    }
+
+    .aval-card-item:hover { border-color: rgba(12,255,225,.25); }
+
+    .aval-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .aval-media-badge {
+      font-family: var(--font-display);
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+
+    .aval-media-badge.alta   { color: #0CFFE1; background: rgba(12,255,225,.08); border-color: rgba(12,255,225,.25); }
+    .aval-media-badge.media  { color: #F0C040; background: rgba(240,192,64,.08); border-color: rgba(240,192,64,.25); }
+    .aval-media-badge.baixa  { color: #ff5f6b; background: rgba(255,95,107,.08); border-color: rgba(255,95,107,.25); }
+
+    .aval-origem {
+      font-family: var(--font-display);
+      font-size: .52rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-left: auto;
+    }
+
+    .aval-data { font-size: .75rem; color: var(--text-dim); }
+
+    .aval-criterios-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .aval-criterio-chip {
+      font-size: .75rem;
+      color: var(--text-muted);
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 10px;
+    }
+
+    .aval-criterio-chip span { color: var(--star); }
+
+    .aval-comentario {
+      font-size: .88rem;
+      color: var(--text-muted);
+      font-style: italic;
+      border-left: 2px solid rgba(12,255,225,.2);
+      padding-left: 12px;
+      margin-top: 8px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 600px) {
+      .admin-nav { padding: 0 16px; }
+      .admin-user { display: none; }
+      .export-bar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loader inicial -->
+  <div id="admin-loader" class="auth-loader">
+    <div class="auth-loader-inner">
+      <span class="auth-loader-icon">⬡</span>
+      <div class="loader-spinner"></div>
+      <p class="loader-text">Carregando painel…</p>
+    </div>
+  </div>
+
+  <!-- Conteúdo (oculto até auth confirmar) -->
+  <div id="admin-content" class="hidden">
+
+    <nav class="admin-nav">
+      <a href="index.html" class="admin-nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span>MVHC</span>
+        <span class="admin-nav-badge">Admin</span>
+      </a>
+      <div class="admin-nav-right">
+        <span class="admin-user" id="admin-user-name"></span>
+        <button onclick="adminLogout()" class="btn-ghost" style="padding:7px 16px;font-size:.62rem">Sair</button>
+      </div>
+    </nav>
+
+    <div class="admin-wrapper">
+      <div class="container">
+
+        <div class="admin-header">
+          <div class="section-label">Painel</div>
+          <h1 class="admin-title">Painel <span class="gradient-text">Administrativo</span></h1>
+          <p class="admin-subtitle">Feedbacks e avaliações dos visitantes em tempo real.</p>
+        </div>
+
+        <!-- Abas principais -->
+        <div class="admin-tabs">
+          <button class="admin-tab active" id="tab-btn-feedbacks" onclick="switchTab('feedbacks', this)">
+            💬 Feedbacks
+            <span class="admin-tab-badge" id="badge-feedbacks">0</span>
+          </button>
+          <button class="admin-tab" id="tab-btn-avaliacoes" onclick="switchTab('avaliacoes', this)">
+            ⭐ Avaliações de Pesquisa
+            <span class="admin-tab-badge" id="badge-avaliacoes">0</span>
+          </button>
+        </div>
+
+        <!-- ===== PAINEL: FEEDBACKS ===== -->
+        <div id="painel-feedbacks">
+          <div class="admin-stats" id="admin-stats">
+            <div class="stat-card">
+              <span class="stat-num" id="stat-total">—</span>
+              <span class="stat-label">Total</span>
+            </div>
+          </div>
+
+          <div class="admin-filter">
+            <span class="filter-label">Filtrar:</span>
+            <button class="filter-btn active" onclick="filterFeedbacks('', this)">Todos</button>
+            <button class="filter-btn" onclick="filterFeedbacks('design', this)">Design</button>
+            <button class="filter-btn" onclick="filterFeedbacks('conteudo', this)">Conteúdo</button>
+            <button class="filter-btn" onclick="filterFeedbacks('usabilidade', this)">Usabilidade</button>
+            <button class="filter-btn" onclick="filterFeedbacks('desempenho', this)">Desempenho</button>
+            <button class="filter-btn" onclick="filterFeedbacks('sugestao', this)">Sugestões</button>
+            <button class="filter-btn" onclick="filterFeedbacks('outro', this)">Outro</button>
+          </div>
+
+          <div id="admin-list" class="admin-list"></div>
+        </div>
+
+        <!-- ===== PAINEL: AVALIAÇÕES ===== -->
+        <div id="painel-avaliacoes" style="display:none">
+
+          <!-- Estatísticas gerais -->
+          <div class="aval-stats-grid" id="aval-stats-grid">
+            <div class="aval-stat-card">
+              <span class="aval-stat-num" id="aval-total">—</span>
+              <span class="aval-stat-label">Total</span>
+            </div>
+            <div class="aval-stat-card">
+              <span class="aval-stat-num" id="aval-media-geral">—</span>
+              <span class="aval-stat-label">Média Geral</span>
+            </div>
+            <div class="aval-stat-card">
+              <span class="aval-stat-num" id="aval-link">—</span>
+              <span class="aval-stat-label">Via Link Externo</span>
+            </div>
+            <div class="aval-stat-card">
+              <span class="aval-stat-num" id="aval-museu">—</span>
+              <span class="aval-stat-label">Via Museu (Botão)</span>
+            </div>
+          </div>
+
+          <!-- Médias por critério -->
+          <div class="aval-criterios-grid" id="aval-criterios-grid">
+            <div class="criterio-bar-card">
+              <div class="criterio-bar-header">
+                <span class="criterio-bar-name">🕹️ Navegação 3D</span>
+                <span class="criterio-bar-score" id="avg-navegacao">—</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" id="bar-navegacao" style="width:0%"></div></div>
+            </div>
+            <div class="criterio-bar-card">
+              <div class="criterio-bar-header">
+                <span class="criterio-bar-name">⚡ Desempenho</span>
+                <span class="criterio-bar-score" id="avg-desempenho">—</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" id="bar-desempenho" style="width:0%"></div></div>
+            </div>
+            <div class="criterio-bar-card">
+              <div class="criterio-bar-header">
+                <span class="criterio-bar-name">🎨 Qualidade Visual</span>
+                <span class="criterio-bar-score" id="avg-visual">—</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" id="bar-visual" style="width:0%"></div></div>
+            </div>
+            <div class="criterio-bar-card">
+              <div class="criterio-bar-header">
+                <span class="criterio-bar-name">📖 Conteúdo Histórico</span>
+                <span class="criterio-bar-score" id="avg-conteudo">—</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" id="bar-conteudo" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- Barra de ação + export -->
+          <div class="export-bar">
+            <span class="export-info" id="export-info">0 avaliações carregadas</span>
+            <button class="btn-export" onclick="exportarCSV()">
+              ⬇ Exportar CSV para Pesquisa
+            </button>
+          </div>
+
+          <!-- Lista de avaliações -->
+          <div id="aval-list" class="admin-list"></div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp }         from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut }
+      from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, query, orderBy }
+      from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey:            "AIzaSyACU2e2XRbrVH4_iYjF9_memwqxcxBvTzg",
+      authDomain:        "mvhc-d8cde.firebaseapp.com",
+      projectId:         "mvhc-d8cde",
+      storageBucket:     "mvhc-d8cde.firebasestorage.app",
+      messagingSenderId: "520624726072",
+      appId:             "1:520624726072:web:801b9ede2d99dec62186cd",
+      measurementId:     "G-3VH596CJLF"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    /* ===================== HELPERS ===================== */
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function stars(n) {
+      return "★".repeat(n || 0) + "☆".repeat(5 - (n || 0));
+    }
+
+    function fmt(ts) {
+      return ts?.toDate?.()?.toLocaleString("pt-BR", {
+        day: "2-digit", month: "2-digit", year: "numeric",
+        hour: "2-digit", minute: "2-digit"
+      }) || "";
+    }
+
+    /* ===================== TROCA DE ABAS ===================== */
+    window.switchTab = (tab, btn) => {
+      document.querySelectorAll(".admin-tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("painel-feedbacks").style.display  = tab === "feedbacks"  ? "" : "none";
+      document.getElementById("painel-avaliacoes").style.display = tab === "avaliacoes" ? "" : "none";
+    };
+
+    /* ===================== FEEDBACKS ===================== */
+    const LABELS = {
+      design: "Design Visual", conteudo: "Conteúdo Histórico",
+      usabilidade: "Usabilidade", desempenho: "Desempenho",
+      sugestao: "Sugestão de Melhoria", outro: "Outro"
+    };
+
+    let allFeedbacks = [];
+    let activeFilter = "";
+
+    function renderFeedbacks(list) {
+      const el = document.getElementById("admin-list");
+      if (!list.length) {
+        el.innerHTML = `<div class="admin-empty">
+          <div class="admin-empty-icon">💬</div>
+          <p style="color:var(--text-muted)">Nenhum feedback${activeFilter ? " nessa categoria" : ""} ainda.</p>
+        </div>`;
+        return;
+      }
+      el.innerHTML = list.map(fb => `
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-nome">${escapeHtml(fb.nome)}</span>
+            <span class="admin-categoria">${LABELS[fb.categoria] || fb.categoria}</span>
+            <span class="admin-data">${fb.data}</span>
+          </div>
+          <p class="admin-msg">${escapeHtml(fb.msg)}</p>
+        </div>`).join("");
+    }
+
+    function updateFeedbackStats(list) {
+      const counts = {};
+      list.forEach(fb => { counts[fb.categoria] = (counts[fb.categoria] || 0) + 1; });
+      const extras = Object.entries(LABELS).filter(([k]) => counts[k])
+        .map(([k, v]) => `<div class="stat-card">
+          <span class="stat-num">${counts[k]}</span>
+          <span class="stat-label">${v}</span>
+        </div>`).join("");
+      document.getElementById("admin-stats").innerHTML =
+        `<div class="stat-card">
+          <span class="stat-num">${list.length}</span>
+          <span class="stat-label">Total</span>
+        </div>${extras}`;
+      document.getElementById("badge-feedbacks").textContent = list.length;
+    }
+
+    window.filterFeedbacks = (cat, btn) => {
+      activeFilter = cat;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderFeedbacks(cat ? allFeedbacks.filter(fb => fb.categoria === cat) : allFeedbacks);
+    };
+
+    /* ===================== AVALIAÇÕES ===================== */
+    let allAvaliacoes = [];
+
+    const LIKERT_KEYS = [
+      { key: "q3_comandos",     label: "Q3 Comandos" },
+      { key: "q4_movimentacao", label: "Q4 Movimentação" },
+      { key: "q5_interacao",    label: "Q5 Interação" },
+      { key: "q6_desempenho",   label: "Q6 Desempenho" },
+      { key: "q7_visual",       label: "Q7 Visual" },
+      { key: "q8_textos",       label: "Q8 Textos" },
+      { key: "q9_contribuicao", label: "Q9 Contribuição" },
+      { key: "q10_geral",       label: "Q10 Geral" }
+    ];
+
+    const BAR_MAP = {
+      "navegacao": "q3_comandos",
+      "desempenho": "q6_desempenho",
+      "visual": "q7_visual",
+      "conteudo": "q9_contribuicao"
+    };
+
+    function avg(list, key) {
+      if (!list.length) return 0;
+      return list.reduce((s, a) => s + (a[key] || 0), 0) / list.length;
+    }
+
+    const PERFIL_LABELS = { estudante: "Estudante", professor: "Professor", publico: "Público Geral", outro: "Outro" };
+    const FREQ_LABELS   = { nunca: "Nunca", raramente: "Raramente", "as-vezes": "Às vezes", frequentemente: "Frequentemente" };
+
+    function updateAvaliacaoStats(list) {
+      const total   = list.length;
+      const viaLink = list.filter(a => a.origem === "link-externo").length;
+      const mediaG  = total ? (list.reduce((s, a) => s + (a.media || 0), 0) / total) : 0;
+
+      document.getElementById("aval-total").textContent       = total;
+      document.getElementById("aval-media-geral").textContent = total ? mediaG.toFixed(1) + " ★" : "—";
+      document.getElementById("aval-link").textContent        = viaLink;
+      document.getElementById("aval-museu").textContent       = total - viaLink;
+      document.getElementById("badge-avaliacoes").textContent = total;
+      document.getElementById("export-info").textContent      =
+        `${total} avaliação${total !== 1 ? "ões" : ""} registrada${total !== 1 ? "s" : ""}`;
+
+      /* Barras: usa mapeamento para novos campos */
+      Object.entries(BAR_MAP).forEach(([barId, fieldKey]) => {
+        const a = total ? avg(list, fieldKey) : 0;
+        const el = document.getElementById("avg-" + barId);
+        const bar = document.getElementById("bar-" + barId);
+        if (el)  el.textContent   = total ? a.toFixed(1) + " / 5" : "—";
+        if (bar) bar.style.width  = total ? (a / 5 * 100) + "%" : "0%";
+      });
+    }
+
+    function renderAvaliacoes(list) {
+      const el = document.getElementById("aval-list");
+      if (!list.length) {
+        el.innerHTML = `<div class="admin-empty">
+          <div class="admin-empty-icon">⭐</div>
+          <p style="color:var(--text-muted)">Nenhuma avaliação ainda. Compartilhe o link de avaliação!</p>
+        </div>`;
+        return;
+      }
+
+      el.innerHTML = list.map((a, i) => {
+        const media  = a.media || 0;
+        const cls    = media >= 4 ? "alta" : media >= 3 ? "media" : "baixa";
+        const origem = a.origem === "link-externo" ? "🔗 Link Externo" : "🖱️ Botão Museu";
+        const perfil = PERFIL_LABELS[a.perfil] || "—";
+        const freq   = FREQ_LABELS[a.frequencia] || "—";
+        const chips  = LIKERT_KEYS.map(({ key, label }) =>
+          `<span class="aval-criterio-chip">${label}: <span>${a[key] || "—"}★</span></span>`
+        ).join("");
+
+        return `<div class="aval-card-item">
+          <div class="aval-card-header">
+            <span style="font-family:var(--font-display);font-size:.6rem;color:var(--text-dim)">#${list.length - i}</span>
+            <span class="aval-media-badge ${cls}">★ ${media.toFixed(1)} / 5.0</span>
+            <span class="aval-media-badge" style="color:var(--violet2);background:rgba(139,126,255,.08);border-color:rgba(139,126,255,.25)">${perfil}</span>
+            <span class="aval-origem">${origem}</span>
+            <span class="aval-data">${a.data}</span>
+          </div>
+          <div style="font-size:.76rem;color:var(--text-dim);margin-bottom:8px">
+            Frequência 3D: <strong style="color:var(--text-muted)">${freq}</strong>
+          </div>
+          <div class="aval-criterios-row">${chips}</div>
+          ${a.q11_dificuldade ? `<p class="aval-comentario"><strong style="color:var(--text-muted);font-style:normal">Dificuldade:</strong> "${escapeHtml(a.q11_dificuldade)}"</p>` : ""}
+          ${a.q12_melhoria    ? `<p class="aval-comentario"><strong style="color:var(--text-muted);font-style:normal">Melhoria:</strong> "${escapeHtml(a.q12_melhoria)}"</p>` : ""}
+        </div>`;
+      }).join("");
+    }
+
+    /* ===================== EXPORTAR CSV ===================== */
+    window.exportarCSV = () => {
+      if (!allAvaliacoes.length) { alert("Nenhuma avaliação para exportar."); return; }
+
+      const header = [
+        "ID","Data","Perfil","Frequencia_3D",
+        "Q3_Comandos","Q4_Movimentacao","Q5_Interacao","Q6_Desempenho",
+        "Q7_Visual","Q8_Textos","Q9_Contribuicao","Q10_Geral",
+        "Media_Geral","Origem",
+        "Q11_Dificuldade","Q12_Melhoria"
+      ];
+
+      const esc = s => `"${String(s || "").replace(/"/g, '""')}"`;
+
+      const rows = allAvaliacoes.map((a, i) => [
+        allAvaliacoes.length - i,
+        a.data,
+        PERFIL_LABELS[a.perfil]   || a.perfil   || "",
+        FREQ_LABELS[a.frequencia] || a.frequencia || "",
+        a.q3_comandos     ?? "",
+        a.q4_movimentacao ?? "",
+        a.q5_interacao    ?? "",
+        a.q6_desempenho   ?? "",
+        a.q7_visual       ?? "",
+        a.q8_textos       ?? "",
+        a.q9_contribuicao ?? "",
+        a.q10_geral       ?? "",
+        a.media           ?? "",
+        a.origem === "link-externo" ? "Link Externo" : "Botão Museu",
+        esc(a.q11_dificuldade),
+        esc(a.q12_melhoria)
+      ]);
+
+      const csv  = [header, ...rows].map(r => r.join(";")).join("\n");
+      const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+      const url  = URL.createObjectURL(blob);
+      Object.assign(document.createElement("a"), {
+        href: url,
+        download: "avaliacoes_mvhc_" + new Date().toISOString().slice(0, 10) + ".csv"
+      }).click();
+      URL.revokeObjectURL(url);
+    };
+
+    /* ===================== AUTH + LISTENERS ===================== */
+    window.adminLogout = async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
+    };
+
+    onAuthStateChanged(auth, user => {
+      const loader  = document.getElementById("admin-loader");
+      const content = document.getElementById("admin-content");
+
+      if (!user) { window.location.href = "index.html"; return; }
+
+      loader?.classList.add("hidden");
+      content?.classList.remove("hidden");
+
+      const nameEl = document.getElementById("admin-user-name");
+      if (nameEl) nameEl.textContent = user.displayName || user.email;
+
+      /* Feedbacks */
+      onSnapshot(query(collection(db, "feedbacks"), orderBy("timestamp", "desc")), snap => {
+        allFeedbacks = snap.docs.map(doc => {
+          const d = doc.data();
+          return { id: doc.id, nome: d.nome || "Anônimo", categoria: d.categoria || "",
+                   msg: d.msg || "", data: fmt(d.timestamp) };
+        });
+        updateFeedbackStats(allFeedbacks);
+        renderFeedbacks(activeFilter ? allFeedbacks.filter(fb => fb.categoria === activeFilter) : allFeedbacks);
+      }, err => console.error("Feedbacks:", err));
+
+      /* Avaliações */
+      onSnapshot(query(collection(db, "avaliacoes"), orderBy("timestamp", "desc")), snap => {
+        allAvaliacoes = snap.docs.map(doc => {
+          const d = doc.data();
+          return {
+            id:               doc.id,
+            perfil:           d.perfil     || null,
+            frequencia:       d.frequencia || null,
+            q3_comandos:      d.q3_comandos     ?? d.navegacao  ?? null,
+            q4_movimentacao:  d.q4_movimentacao ?? null,
+            q5_interacao:     d.q5_interacao    ?? null,
+            q6_desempenho:    d.q6_desempenho   ?? d.desempenho ?? null,
+            q7_visual:        d.q7_visual       ?? d.visual     ?? null,
+            q8_textos:        d.q8_textos       ?? null,
+            q9_contribuicao:  d.q9_contribuicao ?? d.conteudo   ?? null,
+            q10_geral:        d.q10_geral       ?? null,
+            media:            d.media           ?? null,
+            q11_dificuldade:  d.q11_dificuldade || "",
+            q12_melhoria:     d.q12_melhoria    || "",
+            origem:           d.origem          || "botao-museu",
+            data:             fmt(d.timestamp)
+          };
+        });
+        updateAvaliacaoStats(allAvaliacoes);
+        renderAvaliacoes(allAvaliacoes);
+      }, err => console.error("Avaliações:", err));
+    });
+  </script>
+
+</body>
+</html>
